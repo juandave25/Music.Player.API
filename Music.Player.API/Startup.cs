@@ -1,14 +1,21 @@
+using Infrastructure;
+using Infrastructure.Repository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Music.Player.API
@@ -25,7 +32,42 @@ namespace Music.Player.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            services.AddScoped<ISongRepository, SongRepository>();
+            services.AddScoped<IAlbumRepository, AlbumRepository>();
+            services.AddScoped<IArtistRepository, ArtistRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<ISongService, SongService>();
+            services.AddScoped<IAlbumService, AlbumService>();
+            services.AddScoped<IArtistService, ArtistService>();
+            services.AddScoped<IAuthService, AuthService>();
+
+            services.AddDbContext<Context>(options => options.UseNpgsql(Configuration.GetConnectionString("DBLocalConnection")));  
+
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            });
+
+            services.AddAuthorization();
+
             services.AddControllers();
         }
 
@@ -35,11 +77,27 @@ namespace Music.Player.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
+            else
+            {
+                app.UseExceptionHandler("/error");
+                app.UseHsts();
+            }
+
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+            app.UseCors(x => x
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
