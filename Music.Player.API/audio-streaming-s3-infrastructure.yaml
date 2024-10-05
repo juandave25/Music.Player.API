@@ -1,0 +1,96 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Audio Streaming Application S3 Infrastructure'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: Development
+    AllowedValues: 
+      - Development
+      - Production
+    Description: The deployment environment
+
+Resources:
+  AudioFilesBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'audio-streaming-files-${AWS::AccountId}-${Environment}'
+      AccessControl: Private
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: TransitionToGlacierAndExpire
+            Status: Enabled
+            Transitions:
+              - StorageClass: Glacier
+                TransitionInDays: 90
+            ExpirationInDays: 365
+
+  AudioFilesAccessPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Policy for accessing audio files in S3
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:ListBucket
+              - s3:DeleteObject
+            Resource: 
+              - !GetAtt AudioFilesBucket.Arn
+              - !Sub '${AudioFilesBucket.Arn}/*'
+
+  AudioStreamingAppRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - !Ref AudioFilesAccessPolicy
+
+  AudioBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref AudioFilesBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowSSLRequestsOnly
+            Effect: Deny
+            Principal: '*'
+            Action: s3:*
+            Resource:
+              - !GetAtt AudioFilesBucket.Arn
+              - !Sub '${AudioFilesBucket.Arn}/*'
+            Condition:
+              Bool:
+                aws:SecureTransport: false
+
+Outputs:
+  AudioFilesBucketName:
+    Description: Name of the S3 bucket for audio files
+    Value: !Ref AudioFilesBucket
+  AudioFilesBucketArn:
+    Description: ARN of the S3 bucket for audio files
+    Value: !GetAtt AudioFilesBucket.Arn
+  AudioStreamingAppRoleArn:
+    Description: ARN of the IAM role for the audio streaming application
+    Value: !GetAtt AudioStreamingAppRole.Arn

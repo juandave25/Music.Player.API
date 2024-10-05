@@ -1,3 +1,5 @@
+using Amazon.Extensions.NETCore.Setup;
+using Amazon.S3;
 using Infrastructure;
 using Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -41,6 +43,11 @@ namespace Music.Player.API
             services.AddScoped<IAlbumService, AlbumService>();
             services.AddScoped<IArtistService, ArtistService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddSingleton<ITokenService, TokenService>();
+            services.AddAWSService<IAmazonS3>(new AWSOptions
+            {
+                Region = Amazon.RegionEndpoint.GetBySystemName(Configuration["AWS:Region"])
+            });
 
             services.AddDbContext<Context>(options => options.UseNpgsql(Configuration.GetConnectionString("DBLocalConnection")));  
 
