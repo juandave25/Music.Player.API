@@ -17,10 +17,11 @@ namespace Music.Player.API.Controllers
         private readonly IAuthService _authService;
         private readonly ITokenService  _tokenService;
 
-        public AuthController(IAuthService authService, ITokenService tokenService)
+        public AuthController(IAuthService authService, ITokenService tokenService, IConfiguration configuration)
         {
             _authService = authService;
             _tokenService = tokenService;
+            _configuration = configuration;
         }
 
         [HttpPost("login")]
@@ -31,8 +32,8 @@ namespace Music.Player.API.Controllers
             {
                 return Unauthorized();
             }
-            JwtConfig config = new() { SecretKey = _configuration["Jwt:Key"], Audience = _configuration["Jwt:Audience"], Issuer = _configuration["Jwt:Issuer"], ExpiresInMinutes = int.Parse(_configuration["Jwt:ExpiresInMinutes"]) };
-            var token = _tokenService.GenerateToken(request.Username, config);
+            JwtConfig config = new() { SecretKey = _configuration["Jwt:Key"], Audience = _configuration["Jwt:Audience"], Issuer = _configuration["Jwt:Issuer"], ExpiresInMinutes = int.Parse(_configuration["Jwt:ExpiresInMinutes"]), Role = user.Role };
+            var token = _tokenService.GenerateToken(request.Username, user.Role, config);
             return Ok(new { Token = token });
         }
 

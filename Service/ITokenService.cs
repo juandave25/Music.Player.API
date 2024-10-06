@@ -9,6 +9,6 @@ namespace Service
 {
     public interface ITokenService
     {
-        string GenerateToken(string userId, JwtConfig config);
+        string GenerateToken(string userId, string role, JwtConfig config);
     }
 }

@@ -15,7 +15,7 @@ namespace Service
     {
         private readonly IConfiguration _configuration;
 
-        public string GenerateToken(string userId, JwtConfig config)
+        public string GenerateToken(string userId, string role, JwtConfig config)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.SecretKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -23,7 +23,8 @@ namespace Service
             var claims = new[]
             {
             new Claim(JwtRegisteredClaimNames.Sub, userId),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim(ClaimTypes.Role, role)
         };
 
             var token = new JwtSecurityToken(
