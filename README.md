@@ -3,6 +3,7 @@
 Before executing this solution, you need to follow these steps:
 
 1. Change ConnectionString in the <code>appsettings.json</code> and <code>Context.cs</code> file with your connection string
+
    Note: The database was developed with PostgreSQL : This is an example of connection string :
    
    <code>Host=localhost;Database=music-player;Username=yourdbuser;Password=yourdbpassword;Port=5432</code>
