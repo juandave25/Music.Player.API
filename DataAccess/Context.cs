@@ -8,6 +8,12 @@ namespace Infrastructure
 {
     public class Context : DbContext
     {
+        static Context()
+        {
+            //solution for .NET8  and DateTime problem - https://stackoverflow.com/questions/69961449/net6-and-datetime-problem-cannot-write-datetime-with-kind-utc-to-postgresql-ty
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+        }
+
         public Context()
         {
         }
