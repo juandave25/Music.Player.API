@@ -8,19 +8,19 @@ Before executing this solution, you need to follow these steps:
    
    <code>Host=localhost;Database=music-player;Username=yourdbuser;Password=yourdbpassword;Port=5432</code>
    
-2. You can create your stack using cloud formation I attached a script to make your infrastructure for the S3 bucket and policies automatically or manually. the script is located in :
+2. You can create your stack using cloud formation I attached a script to make your infrastructure for the S3 bucket and policies automatically or If you want you can make it manually. the script is located in :
    
    <code>(https://github.com/juandave25/Music.Player.API/blob/master/Music.Player.API/audio-streaming-s3-infrastructure.yaml)</code>
 
-4. To execute this script you need to open cmd or PowerShell depending of your operating system in the project :
+4. To execute this script you need to open cmd or PowerShell depending on your operating system in the project :
    
    <code>..\yourrepofolder\Music.Player.API\Music.Player.API\audio-streaming-s3-infrastructure.yaml</code>
 
 5. Execute this command:
    
-   <code>aws cloudformation create-stack --stack-name AudioStreamingS3Stack --template-body file://audio-streaming-s3-infrastructure.yaml --parameters ParameterKey=Environment,ParameterValue=development --capabilities CAPABILITY_IAM  --profile your-aws-profile</code>
+   <code>aws cloud formation create-stack --stack-name AudioStreamingS3Stack --template-body file://audio-streaming-s3-infrastructure.yaml --parameters ParameterKey=Environment,ParameterValue=development --capabilities CAPABILITY_IAM  --profile your-aws-profile</code>
 
-   Note: Make sure that you have an user created with permissions to execute aws-cli commands. If you do not have aws-cli you can download from <code>https://awscli.amazonaws.com/AWSCLIV2.msi</code>
+   Note: Ensure you have a user account created with permissions in AWS condole to execute aws-cli commands. If you do not have aws-cli you can download it from <code>https://awscli.amazonaws.com/AWSCLIV2.msi</code>
 
 6. Execute the next commands in your Nuget package console pointing to Products.Api.Data Class Library :  
   <code>Update-database Initial-Setup</code>
