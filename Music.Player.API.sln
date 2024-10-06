@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Music.Player.API", "Music.Player.API\Music.Player.API.csproj", "{0753F83A-0DC0-4860-AF1E-3338F43D171E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Music.Player.API", "Music.Player.API\Music.Player.API.csproj", "{0753F83A-0DC0-4860-AF1E-3338F43D171E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "DataAccess\Infrastructure.csproj", "{B5DC0965-2D2D-46DA-9852-427D49FE9CED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "DataAccess\Infrastructure.csproj", "{B5DC0965-2D2D-46DA-9852-427D49FE9CED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{7EBEB9D7-2979-4EF6-A511-A15408AC23A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{7EBEB9D7-2979-4EF6-A511-A15408AC23A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{DF3783D7-280C-49FD-A6E1-224E3CDD7AFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{DF3783D7-280C-49FD-A6E1-224E3CDD7AFC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Music.Player.API.Test", "Music.Player.API.Test\Music.Player.API.Test.csproj", "{FDBADB53-901C-4962-888C-FFD8DA170133}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{DF3783D7-280C-49FD-A6E1-224E3CDD7AFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF3783D7-280C-49FD-A6E1-224E3CDD7AFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF3783D7-280C-49FD-A6E1-224E3CDD7AFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDBADB53-901C-4962-888C-FFD8DA170133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDBADB53-901C-4962-888C-FFD8DA170133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDBADB53-901C-4962-888C-FFD8DA170133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDBADB53-901C-4962-888C-FFD8DA170133}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

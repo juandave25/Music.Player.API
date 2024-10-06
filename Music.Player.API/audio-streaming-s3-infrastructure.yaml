@@ -4,17 +4,17 @@ Description: 'Audio Streaming Application S3 Infrastructure'
 Parameters:
   Environment:
     Type: String
-    Default: Development
+    Default: development
     AllowedValues: 
-      - Development
-      - Production
+      - development
+      - production
     Description: The deployment environment
 
 Resources:
   AudioFilesBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub 'audio-streaming-files-${AWS::AccountId}-${Environment}'
+      BucketName: !Sub 'audio-streaming-files-${Environment}'
       AccessControl: Private
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true

@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Music.Player.API.Middleware;
 using Service;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,7 @@ namespace Music.Player.API
             {
                 Region = Amazon.RegionEndpoint.GetBySystemName(Configuration["AWS:Region"])
             });
+            services.AddSingleton<IAwsConfigurationService, AwsConfigurationService>();
 
             services.AddDbContext<Context>(options => options.UseNpgsql(Configuration.GetConnectionString("DBLocalConnection")));  
 

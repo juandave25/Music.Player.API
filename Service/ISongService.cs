@@ -15,5 +15,7 @@ namespace Service
         Task UpdateSongAsync(Song song);
         Task DeleteSongAsync(int id);
         Task<string> GetStreamingUrlAsync(int songId);
+        Task<Song> AddMediaFileToSongAsync(int songId, MediaFile mediaFile);
+        Task RemoveMediaFileFromSongAsync(int songId);
     }
 }

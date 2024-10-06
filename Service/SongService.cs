@@ -15,13 +15,14 @@ namespace Service
     {
         private readonly ISongRepository _songRepository;
         private readonly IAmazonS3 _s3Client;
-        private readonly string _bucketName;
+        private string _bucketName;
+        private readonly IAwsConfigurationService _awsConfigurationService;
 
-        public SongService(ISongRepository songRepository, IAmazonS3 s3Client, IConfiguration configuration)
+        public SongService(ISongRepository songRepository, IAmazonS3 s3Client, IConfiguration configuration, IAwsConfigurationService awsConfigurationService)
         {
             _songRepository = songRepository;
             _s3Client = s3Client;
-            _bucketName = configuration["AWS:BucketName"];
+            _awsConfigurationService = awsConfigurationService;
         }
 
         public async Task<IEnumerable<Song>> GetAllSongsAsync()
@@ -57,6 +58,7 @@ namespace Service
         public async Task<string> GetStreamingUrlAsync(int songId)
         {
             var song = await _songRepository.GetSongWithDetailsAsync(songId);
+            _bucketName = await _awsConfigurationService.GetBucketNameAsync();
             if (song?.MediaFile == null)
             {
                 return null;
@@ -70,6 +72,31 @@ namespace Service
             };
 
             return _s3Client.GetPreSignedURL(request);
+        }
+
+        public async Task<Song> AddMediaFileToSongAsync(int songId, MediaFile mediaFile)
+        {
+            var song = await _songRepository.GetSongWithDetailsAsync(songId);
+            if (song == null)
+            {
+                throw new KeyNotFoundException($"Song with id {songId} not found.");
+            }
+
+            song.MediaFile = mediaFile;
+            await _songRepository.UpdateAsync(song);
+            return song;
+        }
+
+        public async Task RemoveMediaFileFromSongAsync(int songId)
+        {
+            var song = await _songRepository.GetSongWithDetailsAsync(songId);
+            if (song == null)
+            {
+                throw new KeyNotFoundException($"Song with id {songId} not found.");
+            }
+
+            song.MediaFile = null;
+            await _songRepository.UpdateAsync(song);
         }
     }
 }

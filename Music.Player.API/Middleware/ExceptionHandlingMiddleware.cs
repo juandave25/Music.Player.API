@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System;
 using Entities;
 
-namespace Music.Player.API
+namespace Music.Player.API.Middleware
 {
     public class ExceptionHandlingMiddleware
     {
