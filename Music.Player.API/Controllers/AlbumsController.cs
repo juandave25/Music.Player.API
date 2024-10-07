@@ -1,8 +1,10 @@
-﻿using Infrastructure.Model;
+﻿using Entities.DTO;
+using Infrastructure.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Music.Player.API.Controllers
@@ -19,40 +21,70 @@ namespace Music.Player.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Album>>> GetAlbums()
+        public async Task<ActionResult<IEnumerable<AlbumDto>>> GetAlbums()
         {
             var albums = await _albumService.GetAllAlbumsAsync();
-            return Ok(albums);
+            var albumDtos = albums.Select(a => new AlbumDto
+            {
+                Id = a.Id,
+                ArtistId = a.ArtistId,
+                ReleaseDate = a.ReleaseDate,
+                ArtistName = a.Artist.Name,
+                Title = a.Title
+
+            });
+            return Ok(albumDtos);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Album>> GetAlbum(int id)
+        public async Task<ActionResult<AlbumDto>> GetAlbum(int id)
         {
             var album = await _albumService.GetAlbumByIdAsync(id);
             if (album == null)
             {
                 return NotFound();
             }
-            return Ok(album);
+            var albumDto = new AlbumDto
+            {
+                Id = album.Id,
+                ArtistId = album.ArtistId,
+                ReleaseDate = album.ReleaseDate,
+                ArtistName = album.Artist.Name,
+                Title = album.Title
+
+            };
+            return Ok(albumDto);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<Album>> CreateAlbum(Album album)
+        public async Task<ActionResult<AlbumDto>> CreateAlbum(CreateAlbumDto albumDto)
         {
+            var album = new Album
+            {
+                Title = albumDto.Title,
+                ArtistId = albumDto.ArtistId,
+                ReleaseDate = albumDto.ReleaseDate,
+            };
             var createdAlbum = await _albumService.CreateAlbumAsync(album);
             return CreatedAtAction(nameof(GetAlbum), new { id = createdAlbum.Id }, createdAlbum);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAlbum(int id, Album album)
+        public async Task<IActionResult> UpdateAlbum(int id, UpdateAlbumDto albumDto)
         {
-            if (id != album.Id)
+            if (id != albumDto.Id)
             {
                 return BadRequest();
             }
-
+            var album = new Album
+            {
+                Id  =  albumDto.Id,
+                Title = albumDto.Title,
+                ArtistId = albumDto.ArtistId,
+                ReleaseDate = albumDto.ReleaseDate,
+            };
             await _albumService.UpdateAlbumAsync(album);
             return NoContent();
         }

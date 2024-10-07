@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Infrastructure.Model
 {
@@ -20,6 +21,7 @@ namespace Infrastructure.Model
         public string Duration { get; set; }
 
         public int AlbumId { get; set; }
+       
         public virtual Album Album { get; set; }
 
         public virtual ICollection<Genre> Genres { get; set; }
