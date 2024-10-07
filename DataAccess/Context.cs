@@ -56,7 +56,7 @@ namespace Infrastructure
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Host=localhost;Database=music-player;Username=postgres;Password=root;Port=5432");
+                optionsBuilder.UseNpgsql("Host=localhost;Database=music-player;Username=postgres;Password=***;Port=5432");
             }
         }
     }
